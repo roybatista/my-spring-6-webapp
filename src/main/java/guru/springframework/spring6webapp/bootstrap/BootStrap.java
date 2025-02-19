@@ -2,8 +2,10 @@ package guru.springframework.spring6webapp.bootstrap;
 
 import guru.springframework.spring6webapp.domain.Author;
 import guru.springframework.spring6webapp.domain.Book;
+import guru.springframework.spring6webapp.domain.Publisher;
 import guru.springframework.spring6webapp.repository.AuthorRepository;
 import guru.springframework.spring6webapp.repository.BookRepository;
+import guru.springframework.spring6webapp.repository.PublisherRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +14,12 @@ public class BootStrap implements CommandLineRunner {
 
     private AuthorRepository authorRepository;
     private BookRepository bookRepository;
+    private PublisherRepository publisherRepository;
 
-    public BootStrap(AuthorRepository authorRepository, BookRepository bookRepository) {
+    public BootStrap(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
+        this.publisherRepository = publisherRepository;
     }
 
     @Override
@@ -45,13 +49,22 @@ public class BootStrap implements CommandLineRunner {
         ericSaved.getBooks().add(dddSaved);
         rodSaved.getBooks().add(noEJBSaved);
 
+        Publisher publisher = new Publisher();
+        publisher.setPublisherName("My Publisher");
+        publisher.setAddress("123 Main");
+
+        Publisher publisherSaved =  publisherRepository.save(publisher);
+
+        dddSaved.setPublisher(publisherSaved);
+        noEJBSaved.setPublisher(publisherSaved);
+
         authorRepository.save(ericSaved);
         authorRepository.save(rodSaved);
-
-
 
         System.out.println("In Bootstrap");
         System.out.println("Author Count: " + authorRepository.count());
         System.out.println("Book Count: " + bookRepository.count());
+
+        System.out.println("Publisher Count: " + publisherRepository.count());
     }
 }
